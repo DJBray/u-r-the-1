@@ -60,7 +60,7 @@ export function isValidWithConstraints (ans: PossibleAnswer, constraints: Constr
     const violatedConstraints = constraints.filter((constraint) => {
         let foundBeams = 0;
         ans.forEach((pair) => {
-            if (constraint.matches.includes(pair)) {
+            if (includes(pair, constraint.matches)) {
                 foundBeams++;
             }
         });
@@ -68,4 +68,9 @@ export function isValidWithConstraints (ans: PossibleAnswer, constraints: Constr
     });
 
     return violatedConstraints.length === 0;
+}
+
+function includes (pair: Pair, list: Pair[]) {
+    return list.filter((item) => item.guy === pair.guy && item.girl === pair.girl)
+        .length > 0;
 }
