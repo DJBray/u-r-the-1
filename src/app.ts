@@ -1,76 +1,75 @@
-// tslint:disable:max-classes-per-file
+// tslint:disable:no-console
+import * as fs from 'fs';
+import * as Bluebird from 'bluebird';
+import { TruthBooth, Pair, Constraint, getPossibleSolutions } from './lib';
 
-// const guysNames: string[] = [];
-// const girlsNames: string[] = [];
-
-export class Pair {
-    public guy: number;
-    public girl: number;
-
-    constructor (guy: number, girl: number) {
-        this.guy = guy;
-        this.girl = girl;
-    }
+interface ITruthBoothImport {
+    guyName: string;
+    girlName: string;
+    match: boolean;
 }
 
-export class Constraint {
-    public matches: Pair[];
-    public beams: number;
-
-    constructor (matches: Pair[], beams: number) {
-        this.matches = matches;
-        this.beams = beams;
-    }
+interface IMatchUp {
+    beams: number;
+    matches: Array<{ guyName: string, girlName: string }>;
 }
 
-type PossibleAnswer = Pair[];
-
-// const constraintsList: Constraint[] = [];
-
-export function getPossibleSolutions (guys: string[], girls: string[], constraints: Constraint[]): PossibleAnswer[] {
-    const possibleMatches = getPossiblePairs(guys, girls);
-    return possibleMatches.filter((pm: PossibleAnswer) => isValidWithConstraints(pm, constraints));
+async function importJSON<Type> (fileName): Promise<Type> {
+    const data = await Bluebird.fromCallback((callback) => {
+        fs.readFile(__dirname + '/' + fileName, callback);
+    });
+    // @ts-ignore
+    return JSON.parse(data) as Type;
 }
 
-export function getPossiblePairs (guys: string[], girls: string[]): PossibleAnswer[] {
-    const recurse = (guyNums: number[], girlNums: number[], ppairs: Pair[]): PossibleAnswer[] => {
-        if (guyNums.length === 0) {
-            return [ppairs];
-        }
+async function run (): Promise<void> {
+    console.log('Reading inputs...');
 
-        let ans: PossibleAnswer[] = [];
-        girlNums.forEach((girlNumber) => {
-            ans = ans.concat(recurse(
-                guyNums.slice(1),
-                girlNums.filter((n) => n !== girlNumber),
-                [...ppairs, new Pair(guyNums[0], girlNumber)],
-            ));
-        });
-        return ans;
-    };
+    const girls = await importJSON<string[]>('../data/season7/girls.json');
+    const guys = await importJSON<string[]>('../data/season7/guys.json');
+    const truthBoothsImport = await importJSON<ITruthBoothImport[]>('../data/season7/truth_booths.json');
 
-    return recurse(
-        Array.from({ length: guys.length }, (_, k) => k),
-        Array.from({ length: girls.length }, (_, k) => k),
-        [],
-    );
-}
+    const week1 = await importJSON<IMatchUp>('../data/season7/week1.json');
+    const week2 = await importJSON<IMatchUp>('../data/season7/week2.json');
+    const week3 = await importJSON<IMatchUp>('../data/season7/week3.json');
+    const week4 = await importJSON<IMatchUp>('../data/season7/week4.json');
+    const week5 = await importJSON<IMatchUp>('../data/season7/week5.json');
+    const week6 = await importJSON<IMatchUp>('../data/season7/week6.json');
+    const week7 = await importJSON<IMatchUp>('../data/season7/week7.json');
+    const week8 = await importJSON<IMatchUp>('../data/season7/week8.json');
+    const week9 = await importJSON<IMatchUp>('../data/season7/week9.json');
+    const weeks = [week1, week2, week3, week4, week5, week6, week7, week8, week9];
 
-export function isValidWithConstraints (ans: PossibleAnswer, constraints: Constraint[]): boolean {
-    const violatedConstraints = constraints.filter((constraint) => {
-        let foundBeams = 0;
-        ans.forEach((pair) => {
-            if (includes(pair, constraint.matches)) {
-                foundBeams++;
-            }
-        });
-        return foundBeams !== constraint.beams;
+    console.log('Reading inputs complete.');
+
+    const girlMap = new Map<string, number>();
+    girls.forEach((name, index) => {
+        girlMap.set(name, index);
     });
 
-    return violatedConstraints.length === 0;
+    const guysMap = new Map<string, number>();
+    guys.forEach((name, index) => {
+        guysMap.set(name, index);
+    });
+
+    const truthBooths = truthBoothsImport.map((booth) => {
+        const guyIndex = guysMap.get(booth.guyName)!;
+        const girlIndex = girlMap.get(booth.girlName)!;
+        return new TruthBooth(new Pair(guyIndex, girlIndex), booth.match);
+    });
+
+    const constraints = weeks.map((week) => {
+        const pairs = week.matches.map((match) => {
+            const guyIndex = guysMap.get(match.guyName)!;
+            const girlIndex = girlMap.get(match.girlName)!;
+            return new Pair(guyIndex, girlIndex);
+        });
+        return new Constraint(pairs, week.beams);
+    });
+
+    console.log('Finding solutions...');
+    const answers = getPossibleSolutions(guys, girls, truthBooths, constraints);
+    console.log('Num possible answers: ' + answers);
 }
 
-function includes (pair: Pair, list: Pair[]) {
-    return list.filter((item) => item.guy === pair.guy && item.girl === pair.girl)
-        .length > 0;
-}
+run();

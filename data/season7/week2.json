@@ -1,0 +1,16 @@
+{
+    "beams": 3,
+    "matches": [
+        { "guyName": "Brett", "girlName": "Asia" },
+        { "guyName": "Moe", "girlName": "Bria" },
+        { "guyName": "Tomas", "girlName": "Cali" },
+        { "guyName": "Lewis", "girlName": "Jasmine" },
+        { "guyName": "Cam", "girlName": "Kayla" },
+        { "guyName": "Tevin", "girlName": "Kenya" },
+        { "guyName": "Kwasi", "girlName": "Lauren" },
+        { "guyName": "Shamoy", "girlName": "Maria" },
+        { "guyName": "Andrew", "girlName": "Morgan" },
+        { "guyName": "Daniel", "girlName": "Nutsa" },
+        { "guyName": "Zak", "girlName": "Samantha" }
+    ]
+}

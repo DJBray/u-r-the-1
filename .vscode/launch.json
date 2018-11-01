@@ -7,6 +7,13 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Debug Program",
+            "program": "${workspaceFolder}/dist/app.js",
+            "preLaunchTask": "tsc: build - tsconfig.json"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Debug Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [

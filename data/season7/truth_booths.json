@@ -1,0 +1,13 @@
+[
+    { "guyName": "Tomas", "girlName": "Maria", "match": false },
+    { "guyName": "Andrew",  "girlName": "Asia", "match": false },
+    { "guyName": "Shamoy",  "girlName": "Maria", "match": true },
+    { "guyName": "Brett",  "girlName": "Kenya", "match": false },
+    { "guyName": "Zak",  "girlName": "Bria", "match": false },
+    { "guyName": "Brett",  "girlName": "Cali", "match": false },
+    { "guyName": "Zak",  "girlName": "Nutsa", "match": false},
+    { "guyName": "Cam",  "girlName": "Kayla", "match": false},
+    { "guyName": "Tomas", "girlName": "Cali", "match": false},
+    { "guyName": "Tevin", "girlName": "Kenya", "match": true },
+    { "guyName": "Cam",  "girlName": "Samantha", "match": false }
+]

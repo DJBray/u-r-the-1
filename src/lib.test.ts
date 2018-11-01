@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getPossiblePairs, Pair, isValidWithConstraints } from './app';
+import { getPossiblePairs, Pair, isValidWithConstraints } from './lib';
 
 describe('getPossiblePairs() -- ', () => {
     describe('with 2 guys and two girls', () => {
